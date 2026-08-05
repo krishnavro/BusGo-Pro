@@ -144,10 +144,38 @@ const adminDashboard = (req, res) => {
     message: "Welcome Admin",
   });
 };
+const createAdmin = async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+
+    const admin = await UserModel.create({
+      name: "Shrikrishna",
+      email: "Shrikrishna@gmail.com",
+      password: hashedPassword,
+      phone: "9876543210",
+      role: "Admin",
+      agencyName: "",
+      isApproved: true,
+    });
+
+    res.json({
+      success: true,
+      message: "Admin Created",
+      admin,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   registerUser,
   loginUser,
   getProfile,
   adminDashboard,
+  createAdmin
 };
