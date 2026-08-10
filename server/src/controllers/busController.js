@@ -383,4 +383,25 @@ const operatorDashboard = async (req, res) => {
   }
 };
 
-module.exports = { registerBus,getAllBuses,searchBus, getMyBuses, updateBus, getPassengers, getBusDetails, deactivateBus,operatorDashboard };
+const getLocations = async (req, res) => {
+  try {
+    const buses = await BusModel.find({ isActive: true });
+
+    const from = [...new Set(buses.map((bus) => bus.from))].sort();
+
+    const to = [...new Set(buses.map((bus) => bus.to))].sort();
+
+    res.status(200).json({
+      success: true,
+      from,
+      to,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { registerBus,getAllBuses,searchBus, getMyBuses, updateBus, getPassengers, getBusDetails, deactivateBus,operatorDashboard, getLocations };

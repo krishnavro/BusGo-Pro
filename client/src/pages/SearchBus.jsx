@@ -6,7 +6,6 @@ import SearchSection from "../components/SearchSection";
 function SearchBus() {
 
     const navigate = useNavigate();
-
     const [searchParams] = useSearchParams();
 
     const from = searchParams.get("from");
@@ -14,20 +13,28 @@ function SearchBus() {
     const date = searchParams.get("date");
 
     const [buses, setBuses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const getBuses = async () => {
 
         try {
 
+            setLoading(true);
+
             const response = await api.get(
-                `/bus/search?from=${from}&to=${to}&date=${date}`
+                `/bus/search?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${date}`
             );
 
-            setBuses(response.data.buses);
+            setBuses(response.data.buses || []);
 
         } catch (error) {
 
             console.log(error);
+            setBuses([]);
+
+        } finally {
+
+            setLoading(false);
 
         }
 
@@ -36,9 +43,9 @@ function SearchBus() {
     useEffect(() => {
 
         if (from && to && date) {
-
             getBuses();
-
+        } else {
+            setLoading(false);
         }
 
     }, [from, to, date]);
@@ -68,15 +75,53 @@ function SearchBus() {
 
                 </p>
 
-                {buses.length === 0 ? (
 
-                    <div className="text-center text-2xl font-semibold mt-20">
+                {/* Loading */}
 
-                        No Buses Found
+                {loading && (
+
+                    <div className="text-center mt-20">
+
+                        <p className="text-xl font-semibold">
+                            Searching for buses...
+                        </p>
 
                     </div>
 
-                ) : (
+                )}
+
+
+                {/* No buses */}
+
+                {!loading && buses.length === 0 && (
+
+                    <div className="border rounded-lg bg-gray-50 p-10 text-center mt-10">
+
+                        <h2 className="text-2xl font-bold text-red-600 mb-4">
+                            Route Journey Not Available
+                        </h2>
+
+                        <p className="text-lg text-gray-700 mb-2">
+                            No buses are currently available for
+                        </p>
+
+                        <p className="text-xl font-bold mb-4">
+                            {from} → {to}
+                        </p>
+
+                        <p className="text-gray-500">
+                            Please try another From / To location or select
+                            a different journey date.
+                        </p>
+
+                    </div>
+
+                )}
+
+
+                {/* Bus Results */}
+
+                {!loading && buses.length > 0 && (
 
                     buses.map((bus) => (
 
@@ -94,12 +139,15 @@ function SearchBus() {
                                 {bus.from} → {bus.to}
                             </p>
 
-                           <p>
+                            <p className="mt-2">
+
                                 <strong>
                                     {bus.runsDaily
                                         ? "Runs Daily"
-                                        : `Journey Date : ${bus.journeyDate?.split("T")[0]}`}
+                                        : `Journey Date : ${bus.journeyDate?.split("T")[0]}`
+                                    }
                                 </strong>
+
                             </p>
 
                             <p>
@@ -129,7 +177,6 @@ function SearchBus() {
         </>
 
     );
-
 }
 
 export default SearchBus;
