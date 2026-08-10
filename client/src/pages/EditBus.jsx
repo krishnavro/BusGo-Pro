@@ -15,10 +15,10 @@ function EditBus() {
         departureTime: "",
         arrivalTime: "",
         journeyDate: "",
+        runsDaily: false,
         totalSeats: "",
         price: "",
         busType: "AC",
-        runsDaily: false,
     });
 
     const handleChange = (e) => {
@@ -41,19 +41,24 @@ function EditBus() {
             const bus = response.data.bus;
 
             setForm({
-                busName: bus.busName,
-                busNumber: bus.busNumber,
-                from: bus.from,
-                to: bus.to,
-                departureTime: bus.departureTime,
-                arrivalTime: bus.arrivalTime,
+
+                busName: bus.busName || "",
+                busNumber: bus.busNumber || "",
+                from: bus.from || "",
+                to: bus.to || "",
+                departureTime: bus.departureTime || "",
+                arrivalTime: bus.arrivalTime || "",
+
                 journeyDate: bus.journeyDate
                     ? bus.journeyDate.split("T")[0]
                     : "",
-                totalSeats: bus.totalSeats,
-                price: bus.price,
-                busType: bus.busType,
+
                 runsDaily: bus.runsDaily || false,
+
+                totalSeats: bus.totalSeats || "",
+                price: bus.price || "",
+                busType: bus.busType || "AC",
+
             });
 
         } catch (error) {
@@ -65,35 +70,39 @@ function EditBus() {
     };
 
     useEffect(() => {
+
         getBus();
+
     }, [id]);
+
 
     const handleUpdateBus = async () => {
 
         try {
 
-            if (!form.runsDaily && !form.journeyDate) {
-                alert("Please select a journey date.");
-                return;
-            }
-
             const busData = {
+
                 ...form,
+
                 journeyDate: form.runsDaily
                     ? null
                     : form.journeyDate,
-                totalSeats: Number(form.totalSeats),
-                price: Number(form.price),
+
             };
 
             const response = await api.put(
+
                 `/bus/update/${id}`,
+
                 busData,
+
                 {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        Authorization:
+                            `Bearer ${localStorage.getItem("token")}`,
                     },
                 }
+
             );
 
             alert(response.data.message);
@@ -111,6 +120,7 @@ function EditBus() {
 
     };
 
+
     return (
 
         <div className="max-w-4xl mx-auto p-10">
@@ -119,7 +129,9 @@ function EditBus() {
                 Edit Bus
             </h1>
 
+
             <div className="grid grid-cols-2 gap-4">
+
 
                 <input
                     type="text"
@@ -130,6 +142,7 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <input
                     type="text"
                     name="busNumber"
@@ -138,6 +151,7 @@ function EditBus() {
                     onChange={handleChange}
                     className="border p-3 rounded"
                 />
+
 
                 <input
                     type="text"
@@ -148,6 +162,7 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <input
                     type="text"
                     name="to"
@@ -157,6 +172,7 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <input
                     type="time"
                     name="departureTime"
@@ -165,6 +181,7 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <input
                     type="time"
                     name="arrivalTime"
@@ -172,6 +189,7 @@ function EditBus() {
                     onChange={handleChange}
                     className="border p-3 rounded"
                 />
+
 
                 <div className="flex items-center gap-3 border p-3 rounded">
 
@@ -183,24 +201,25 @@ function EditBus() {
                         className="w-5 h-5"
                     />
 
-                    <label className="font-medium">
+                    <label className="font-semibold">
                         Runs Daily
                     </label>
 
                 </div>
 
-                <input
-                    type="date"
-                    name="journeyDate"
-                    value={form.journeyDate}
-                    onChange={handleChange}
-                    disabled={form.runsDaily}
-                    className={`border p-3 rounded ${
-                        form.runsDaily
-                            ? "bg-gray-200 cursor-not-allowed"
-                            : ""
-                    }`}
-                />
+
+                {!form.runsDaily && (
+
+                    <input
+                        type="date"
+                        name="journeyDate"
+                        value={form.journeyDate}
+                        onChange={handleChange}
+                        className="border p-3 rounded"
+                    />
+
+                )}
+
 
                 <input
                     type="number"
@@ -211,6 +230,7 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <input
                     type="number"
                     name="price"
@@ -220,23 +240,39 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+
                 <select
                     name="busType"
                     value={form.busType}
                     onChange={handleChange}
                     className="border p-3 rounded"
                 >
-                    <option value="AC">AC</option>
-                    <option value="Non-AC">Non-AC</option>
-                    <option value="Sleeper">Sleeper</option>
-                    <option value="Seater">Seater</option>
+
+                    <option value="AC">
+                        AC
+                    </option>
+
+                    <option value="Non-AC">
+                        Non-AC
+                    </option>
+
+                    <option value="Sleeper">
+                        Sleeper
+                    </option>
+
+                    <option value="Seater">
+                        Seater
+                    </option>
+
                 </select>
+
 
             </div>
 
+
             <button
                 onClick={handleUpdateBus}
-                className="mt-6 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700"
+                className="mt-6 bg-green-600 text-white px-6 py-3 rounded"
             >
                 Update Bus
             </button>
@@ -244,6 +280,7 @@ function EditBus() {
         </div>
 
     );
+
 }
 
 export default EditBus;

@@ -156,67 +156,48 @@ const getMyBuses = async (req, res) => {
 };
 
 const updateBus = async (req, res) => {
-  try {
+    try {
 
-    const { id } = req.params;
+        const { id } = req.params;
 
-    const bus = await BusModel.findById(id);
+        const bus = await BusModel.findById(id);
 
-    if (!bus) {
-      return res.status(404).json({
-        success: false,
-        message: "Bus Not Found",
-      });
+        if (!bus) {
+            return res.status(404).json({
+                success: false,
+                message: "Bus Not Found",
+            });
+        }
+
+        if (bus.operatorId.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+
+        Object.assign(bus, req.body);
+
+        if (bus.runsDaily) {
+            bus.journeyDate = null;
+        }
+
+        const updatedBus = await bus.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Bus Updated Successfully",
+            updatedBus,
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
     }
-
-    if (bus.operatorId.toString() !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-
-    const {
-      runsDaily,
-      journeyDate,
-    } = req.body;
-
-    // One-time bus must have a journey date
-    if (!runsDaily && !journeyDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Journey date is required for non-daily buses",
-      });
-    }
-
-    const updateData = {
-      ...req.body,
-      journeyDate: runsDaily ? null : journeyDate,
-    };
-
-    const updatedBus = await BusModel.findByIdAndUpdate(
-      id,
-      updateData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    res.status(200).json({
-      success: true,
-      message: "Bus Updated Successfully",
-      updatedBus,
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-
-  }
 };
 
 const getPassengers = async (req, res) => {
