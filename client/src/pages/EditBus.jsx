@@ -18,13 +18,18 @@ function EditBus() {
         totalSeats: "",
         price: "",
         busType: "AC",
+        runsDaily: false,
     });
 
     const handleChange = (e) => {
+
+        const { name, value, type, checked } = e.target;
+
         setForm({
             ...form,
-            [e.target.name]: e.target.value,
+            [name]: type === "checkbox" ? checked : value,
         });
+
     };
 
     const getBus = async () => {
@@ -42,10 +47,13 @@ function EditBus() {
                 to: bus.to,
                 departureTime: bus.departureTime,
                 arrivalTime: bus.arrivalTime,
-                journeyDate: bus.journeyDate?.split("T")[0],
+                journeyDate: bus.journeyDate
+                    ? bus.journeyDate.split("T")[0]
+                    : "",
                 totalSeats: bus.totalSeats,
                 price: bus.price,
                 busType: bus.busType,
+                runsDaily: bus.runsDaily || false,
             });
 
         } catch (error) {
@@ -58,15 +66,29 @@ function EditBus() {
 
     useEffect(() => {
         getBus();
-    }, []);
+    }, [id]);
 
     const handleUpdateBus = async () => {
 
         try {
 
+            if (!form.runsDaily && !form.journeyDate) {
+                alert("Please select a journey date.");
+                return;
+            }
+
+            const busData = {
+                ...form,
+                journeyDate: form.runsDaily
+                    ? null
+                    : form.journeyDate,
+                totalSeats: Number(form.totalSeats),
+                price: Number(form.price),
+            };
+
             const response = await api.put(
                 `/bus/update/${id}`,
-                form,
+                busData,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -80,7 +102,10 @@ function EditBus() {
 
         } catch (error) {
 
-            alert(error.response?.data?.message || "Update Failed");
+            alert(
+                error.response?.data?.message ||
+                "Update Failed"
+            );
 
         }
 
@@ -148,12 +173,33 @@ function EditBus() {
                     className="border p-3 rounded"
                 />
 
+                <div className="flex items-center gap-3 border p-3 rounded">
+
+                    <input
+                        type="checkbox"
+                        name="runsDaily"
+                        checked={form.runsDaily}
+                        onChange={handleChange}
+                        className="w-5 h-5"
+                    />
+
+                    <label className="font-medium">
+                        Runs Daily
+                    </label>
+
+                </div>
+
                 <input
                     type="date"
                     name="journeyDate"
                     value={form.journeyDate}
                     onChange={handleChange}
-                    className="border p-3 rounded"
+                    disabled={form.runsDaily}
+                    className={`border p-3 rounded ${
+                        form.runsDaily
+                            ? "bg-gray-200 cursor-not-allowed"
+                            : ""
+                    }`}
                 />
 
                 <input
@@ -190,7 +236,7 @@ function EditBus() {
 
             <button
                 onClick={handleUpdateBus}
-                className="mt-6 bg-green-600 text-white px-6 py-3 rounded"
+                className="mt-6 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700"
             >
                 Update Bus
             </button>
@@ -198,7 +244,6 @@ function EditBus() {
         </div>
 
     );
-
 }
 
 export default EditBus;

@@ -2,45 +2,61 @@ const cron = require("node-cron");
 const BusModel = require("../models/Bus");
 
 cron.schedule("*/5 * * * *", async () => {
-  try {
-    console.log("Checking completed buses...");
 
-    const buses = await BusModel.find({
-      isActive: true,
-    });
+    try {
 
-    const now = new Date();
+        console.log("Checking completed buses...");
 
-    for (const bus of buses) {
-      // Journey Date
-      const journey = new Date(bus.journeyDate);
+        const buses = await BusModel.find({
+            isActive: true,
+            runsDaily: false,
+        });
 
-      // Arrival Time
-      const [time, modifier] = bus.arrivalTime.split(" ");
+        const now = new Date();
 
-      let [hours, minutes] = time.split(":").map(Number);
+        for (const bus of buses) {
 
-      if (modifier === "PM" && hours !== 12) {
-        hours += 12;
-      }
+            if (!bus.journeyDate) {
+                continue;
+            }
 
-      if (modifier === "AM" && hours === 12) {
-        hours = 0;
-      }
+            const journey = new Date(bus.journeyDate);
 
-      journey.setHours(hours);
-      journey.setMinutes(minutes);
-      journey.setSeconds(0);
+            const [time, modifier] = bus.arrivalTime.split(" ");
 
-      if (journey < now) {
-        bus.isActive = false;
-        await bus.save();
+            let [hours, minutes] = time.split(":").map(Number);
 
-        console.log(`${bus.busName} automatically deactivated.`);
-      }
+            if (modifier === "PM" && hours !== 12) {
+                hours += 12;
+            }
+
+            if (modifier === "AM" && hours === 12) {
+                hours = 0;
+            }
+
+            journey.setHours(hours);
+            journey.setMinutes(minutes);
+            journey.setSeconds(0);
+            journey.setMilliseconds(0);
+
+            if (journey < now) {
+
+                bus.isActive = false;
+
+                await bus.save();
+
+                console.log(
+                    `${bus.busName} automatically deactivated.`
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.log(error.message);
+
     }
 
-  } catch (error) {
-    console.log(error.message);
-  }
 });

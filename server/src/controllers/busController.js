@@ -3,10 +3,27 @@ const BookingModel = require('../models/Booking');
 
 const registerBus = async (req, res) => {
   try {
+    const {
+      runsDaily,
+      journeyDate,
+    } = req.body;
+
+    // One-time buses must have a journey date
+    if (!runsDaily && !journeyDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Journey date is required for non-daily buses",
+      });
+    }
+
     const bus = await BusModel.create({
-        ...req.body,
-        operatorId: req.user.id,
-        isActive: true,
+      ...req.body,
+
+      // Daily bus does not need a journey date
+      journeyDate: runsDaily ? null : journeyDate,
+
+      operatorId: req.user.id,
+      isActive: true,
     });
 
     res.status(201).json({
@@ -14,11 +31,14 @@ const registerBus = async (req, res) => {
       message: "Bus Registered Successfully",
       bus,
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -66,18 +86,37 @@ const searchBus = async (req, res) => {
       };
     }
 
+    /*
+      If traveller searches for a particular date:
+
+      1. Show one-time buses whose journeyDate matches that date
+      2. Show buses where runsDaily = true
+    */
+
     if (date) {
 
       const start = new Date(date);
 
       const end = new Date(date);
-
       end.setDate(end.getDate() + 1);
 
-      query.journeyDate = {
-        $gte: start,
-        $lt: end,
-      };
+      query.$or = [
+
+        // One-time bus for this specific date
+        {
+          runsDaily: false,
+          journeyDate: {
+            $gte: start,
+            $lt: end,
+          },
+        },
+
+        // Daily bus
+        {
+          runsDaily: true,
+        },
+
+      ];
 
     }
 
@@ -118,6 +157,7 @@ const getMyBuses = async (req, res) => {
 
 const updateBus = async (req, res) => {
   try {
+
     const { id } = req.params;
 
     const bus = await BusModel.findById(id);
@@ -136,9 +176,27 @@ const updateBus = async (req, res) => {
       });
     }
 
-   const updatedBus = await BusModel.findByIdAndUpdate(
+    const {
+      runsDaily,
+      journeyDate,
+    } = req.body;
+
+    // One-time bus must have a journey date
+    if (!runsDaily && !journeyDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Journey date is required for non-daily buses",
+      });
+    }
+
+    const updateData = {
+      ...req.body,
+      journeyDate: runsDaily ? null : journeyDate,
+    };
+
+    const updatedBus = await BusModel.findByIdAndUpdate(
       id,
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true,
@@ -150,11 +208,14 @@ const updateBus = async (req, res) => {
       message: "Bus Updated Successfully",
       updatedBus,
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 

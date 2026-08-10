@@ -28,9 +28,17 @@ const busSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    runsDaily: {
+      type: Boolean,
+      default: false,
+    },
+
     journeyDate: {
       type: Date,
-      required: true,
+      required: function () {
+        return !this.runsDaily;
+      },
     },
 
     departureTime: {
@@ -63,11 +71,11 @@ const busSchema = new mongoose.Schema(
       enum: ["AC", "Non-AC", "Sleeper", "Seater"],
       required: true,
     },
-    isActive: {
-  type: Boolean,
-  default: true,
-},
 
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
