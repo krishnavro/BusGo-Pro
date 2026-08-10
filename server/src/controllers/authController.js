@@ -117,39 +117,27 @@ const registerUser = async (req, res) => {
 
 // Login
 const loginUser = async (req, res) => {
-
     try {
 
-        const {
-            email,
-            password
-        } = req.body;
+        const { email, password } = req.body;
 
+        // Remove spaces from email
+        const normalizedEmail = email.trim();
 
-        // Convert email to lowercase and remove spaces
-        const normalizedEmail = email.toLowerCase().trim();
-
-
-        // Find User
+        // Case-insensitive email search
         const user = await UserModel.findOne({
-
-            email: normalizedEmail
-
+            email: {
+                $regex: `^${normalizedEmail}$`,
+                $options: "i"
+            }
         });
 
-
         if (!user) {
-
             return res.status(404).json({
-
                 success: false,
-
                 message: "User Not Found",
-
             });
-
         }
-
 
         // Check Password
         const isMatch = await bcrypt.compare(
@@ -157,81 +145,52 @@ const loginUser = async (req, res) => {
             user.password
         );
 
-
         if (!isMatch) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message: "Invalid Password",
-
             });
-
         }
-
 
         // Check Status
         if (user.status !== "Approved") {
-
             return res.status(400).json({
-
                 success: false,
-
                 message: `Your account is ${user.status}`,
-
             });
-
         }
-
 
         // Generate Token
         const token = jwt.sign(
-
             {
                 id: user._id,
                 role: user.role,
             },
-
             process.env.JWT_SECRET,
-
             {
                 expiresIn: "7d",
             }
-
         );
-
 
         const userData = user.toObject();
 
         delete userData.password;
 
-
         res.status(200).json({
-
             success: true,
-
             message: "Login Successful",
-
             token,
-
             user: userData,
-
         });
-
 
     } catch (error) {
 
         res.status(500).json({
-
             success: false,
-
             message: error.message,
-
         });
 
     }
-
 };
 
 
