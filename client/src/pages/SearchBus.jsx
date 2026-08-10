@@ -94,8 +94,12 @@ function SearchBus() {
                                 {bus.from} → {bus.to}
                             </p>
 
-                            <p>
-                                Journey Date : {bus.journeyDate?.split("T")[0]}
+                           <p>
+                                <strong>
+                                    {bus.runsDaily
+                                        ? "Runs Daily"
+                                        : `Journey Date : ${bus.journeyDate?.split("T")[0]}`}
+                                </strong>
                             </p>
 
                             <p>

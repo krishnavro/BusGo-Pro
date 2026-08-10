@@ -91,7 +91,13 @@ function MyBuses() {
 
                             <p>{bus.from} → {bus.to}</p>
 
-                            <p>Date : {bus.journeyDate?.split("T")[0]}</p>
+                            <p>
+                                <strong>
+                                    {bus.runsDaily
+                                        ? "Runs Daily"
+                                        : `Journey Date : ${bus.journeyDate?.split("T")[0]}`}
+                                </strong>
+                            </p>
 
                             <p>
                                 Seats : {bus.availableSeats}/{bus.totalSeats}
