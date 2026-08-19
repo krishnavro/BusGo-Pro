@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
-// Register
+
 const registerUser = async (req, res) => {
 
     try {
@@ -19,11 +19,11 @@ const registerUser = async (req, res) => {
         } = req.body;
 
 
-        // Convert email to lowercase and remove extra spaces
+        
         const normalizedEmail = email.toLowerCase().trim();
 
 
-        // Only Traveller and Operator can register
+        
         if (
             role !== "Admin" &&
             role !== "Traveller" &&
@@ -38,7 +38,7 @@ const registerUser = async (req, res) => {
         }
 
 
-        // Check Existing User
+        
         const existingUser = await UserModel.findOne({
             email: normalizedEmail
         });
@@ -54,11 +54,11 @@ const registerUser = async (req, res) => {
         }
 
 
-        // Hash Password
+        
         const hashedPassword = await bcrypt.hash(password, 10);
 
 
-        // Create User
+        
         const user = await UserModel.create({
 
             name,
@@ -75,8 +75,8 @@ const registerUser = async (req, res) => {
 
             profileImage,
 
-            // Traveller -> Approved
-            // Operator -> Pending
+            
+            
             status: role === "Traveller"
                 ? "Approved"
                 : "Pending",
@@ -115,16 +115,16 @@ const registerUser = async (req, res) => {
 };
 
 
-// Login
+
 const loginUser = async (req, res) => {
     try {
 
         const { email, password } = req.body;
 
-        // Remove spaces from email
+        
         const normalizedEmail = email.trim();
 
-        // Case-insensitive email search
+        
         const user = await UserModel.findOne({
             email: {
                 $regex: `^${normalizedEmail}$`,
@@ -139,7 +139,7 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Check Password
+        
         const isMatch = await bcrypt.compare(
             password,
             user.password
@@ -152,7 +152,7 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Check Status
+        
         if (user.status !== "Approved") {
             return res.status(400).json({
                 success: false,
@@ -160,7 +160,7 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Generate Token
+        
         const token = jwt.sign(
             {
                 id: user._id,
@@ -194,7 +194,7 @@ const loginUser = async (req, res) => {
 };
 
 
-// Profile
+
 const getProfile = async (req, res) => {
 
     try {
@@ -222,7 +222,7 @@ const getProfile = async (req, res) => {
 };
 
 
-// Admin Dashboard
+
 const adminDashboard = (req, res) => {
 
     res.status(200).json({
@@ -236,7 +236,7 @@ const adminDashboard = (req, res) => {
 };
 
 
-// Create Admin
+
 const createAdmin = async (req, res) => {
 
     try {

@@ -8,7 +8,7 @@ const registerBus = async (req, res) => {
       journeyDate,
     } = req.body;
 
-    // One-time buses must have a journey date
+    
     if (!runsDaily && !journeyDate) {
       return res.status(400).json({
         success: false,
@@ -19,7 +19,7 @@ const registerBus = async (req, res) => {
     const bus = await BusModel.create({
       ...req.body,
 
-      // Daily bus does not need a journey date
+      
       journeyDate: runsDaily ? null : journeyDate,
 
       operatorId: req.user.id,
@@ -86,12 +86,7 @@ const searchBus = async (req, res) => {
       };
     }
 
-    /*
-      If traveller searches for a particular date:
-
-      1. Show one-time buses whose journeyDate matches that date
-      2. Show buses where runsDaily = true
-    */
+    
 
     if (date) {
 
@@ -102,7 +97,7 @@ const searchBus = async (req, res) => {
 
       query.$or = [
 
-        // One-time bus for this specific date
+        
         {
           runsDaily: false,
           journeyDate: {
@@ -111,7 +106,7 @@ const searchBus = async (req, res) => {
           },
         },
 
-        // Daily bus
+      
         {
           runsDaily: true,
         },
@@ -309,7 +304,7 @@ const operatorDashboard = async (req, res) => {
 
     const operatorId = req.user.id;
 
-    // Get all buses of this operator
+    
     const buses = await BusModel.find({ operatorId });
 
     const totalBuses = buses.length;

@@ -5,7 +5,7 @@ const bookSeat = async (req, res) => {
   try {
     const { busId, seatNumber } = req.body;
 
-    // Check Bus Exists
+    
     const bus = await BusModel.findById(busId);
 
     if (!bus) {
@@ -15,7 +15,7 @@ const bookSeat = async (req, res) => {
       });
     }
 
-    // Check Seat Number
+   
     if (seatNumber > bus.totalSeats || seatNumber < 1) {
       return res.status(400).json({
         success: false,
@@ -23,7 +23,7 @@ const bookSeat = async (req, res) => {
       });
     }
 
-    // Check Seat Already Booked
+    
     const alreadyBooked = await BookingModel.findOne({
       busId,
       seatNumber,
@@ -37,7 +37,7 @@ const bookSeat = async (req, res) => {
       });
     }
 
-    // Create Booking
+    
     const booking = await BookingModel.create({
       userId: req.user.id,
       busId,
@@ -45,7 +45,7 @@ const bookSeat = async (req, res) => {
       price: bus.price,
     });
 
-    // Update Available Seats
+    
     bus.availableSeats -= 1;
     await bus.save();
 
