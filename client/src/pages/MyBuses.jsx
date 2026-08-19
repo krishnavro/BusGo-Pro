@@ -71,71 +71,71 @@ function MyBuses() {
 
             <div className="grid gap-6">
 
-                {buses.map((bus) => {
+            {buses.map((bus) => {
 
-                    console.log("BUS OBJECT :", bus);
-                    console.log("BUS ID :", bus._id);
+                console.log("BUS OBJECT :", bus);
+                console.log("BUS ID :", bus._id);
 
-                    return (
+                return (
 
-                        <div
-                            key={bus._id}
-                            className="border rounded-lg p-5 shadow"
-                        >
+                <div
+                    key={bus._id}
+                    className="border rounded-lg p-5 shadow"
+                >
 
-                            <h2 className="text-2xl font-bold">
-                                {bus.busName}
-                            </h2>
+                    <h2 className="text-2xl font-bold">
+                        {bus.busName}
+                    </h2>
 
-                            <p>Bus Number : {bus.busNumber}</p>
+                    <p>Bus Number : {bus.busNumber}</p>
 
-                            <p>{bus.from} → {bus.to}</p>
+                    <p>{bus.from} → {bus.to}</p>
 
-                            <p>
-                                <strong>
-                                    {bus.runsDaily
-                                        ? "Runs Daily"
-                                        : `Journey Date : ${bus.journeyDate?.split("T")[0]}`}
-                                </strong>
-                            </p>
+                    <p>
+                        <strong>
+                            {bus.runsDaily
+                                ? "Runs Daily"
+                                : `Journey Date : ${bus.journeyDate?.split("T")[0]}`}
+                        </strong>
+                    </p>
 
-                            <p>
-                                Seats : {bus.availableSeats}/{bus.totalSeats}
-                            </p>
+                    <p>
+                        Seats : {bus.availableSeats}/{bus.totalSeats}
+                    </p>
 
-                            <p className="text-blue-600 font-bold">
-                                ₹ {bus.price}
-                            </p>
+                    <p className="text-blue-600 font-bold">
+                        ₹ {bus.price}
+                    </p>
 
-                            <div className="flex gap-3 mt-4">
+                    <div className="flex gap-3 mt-4">
 
-                                <button
-                                    onClick={() => {
+                    <button
+                        onClick={() => {
 
-                                        console.log("CLICKED ID :", bus._id);
+                            console.log("CLICKED ID :", bus._id);
 
-                                        navigate(`/operator/edit-bus/${bus._id}`);
+                            navigate(`/operator/edit-bus/${bus._id}`);
 
-                                    }}
-                                    className="bg-yellow-500 text-white px-4 py-2 rounded"
-                                >
-                                    Edit
-                                </button>
+                        }}
+                        className="bg-yellow-500 text-white px-4 py-2 rounded"
+                    >
+                        Edit
+                    </button>
 
-                                <button
-                                    onClick={() => deleteBus(bus._id)}
-                                    className="bg-red-600 text-white px-4 py-2 rounded"
-                                >
-                                    Delete
-                                </button>
+                    <button
+                        onClick={() => deleteBus(bus._id)}
+                        className="bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Delete
+                    </button>
 
-                            </div>
+                    </div>
 
-                        </div>
+                </div>
 
-                    );
+                );
 
-                })}
+            })}
 
             </div>
 

@@ -34,71 +34,71 @@ function AllBuses() {
 
     return (
 
-        <div className="max-w-7xl mx-auto p-10">
+    <div className="max-w-7xl mx-auto p-10">
 
-            <h1 className="text-4xl font-bold mb-8">
-                All Buses
-            </h1>
+        <h1 className="text-4xl font-bold mb-8">
+            All Buses
+        </h1>
 
-            <table className="w-full border border-gray-300">
+    <table className="w-full border border-gray-300">
 
-                <thead className="bg-blue-600 text-white">
+        <thead className="bg-blue-600 text-white">
 
-                    <tr>
+            <tr>
 
-                        <th className="border p-3">Bus</th>
-                        <th className="border p-3">Number</th>
-                        <th className="border p-3">Route</th>
-                        <th className="border p-3">Operator</th>
-                        <th className="border p-3">Seats</th>
-                        <th className="border p-3">Status</th>
+                <th className="border p-3">Bus</th>
+                <th className="border p-3">Number</th>
+                <th className="border p-3">Route</th>
+                <th className="border p-3">Operator</th>
+                <th className="border p-3">Seats</th>
+                <th className="border p-3">Status</th>
 
-                    </tr>
+            </tr>
 
-                </thead>
+        </thead>
 
-                <tbody>
+<tbody>
 
-                    {buses.map((bus) => (
+    {buses.map((bus) => (
 
-                        <tr
-                            key={bus._id}
-                            className="text-center"
-                        >
+    <tr
+        key={bus._id}
+        className="text-center"
+    >
 
-                            <td className="border p-3">
-                                {bus.busName}
-                            </td>
+        <td className="border p-3">
+            {bus.busName}
+        </td>
 
-                            <td className="border p-3">
-                                {bus.busNumber}
-                            </td>
+        <td className="border p-3">
+            {bus.busNumber}
+        </td>
 
-                            <td className="border p-3">
-                                {bus.from} → {bus.to}
-                            </td>
+        <td className="border p-3">
+            {bus.from} → {bus.to}
+        </td>
 
-                            <td className="border p-3">
-                                {bus.operatorId?.name}
-                            </td>
+        <td className="border p-3">
+            {bus.operatorId?.name}
+        </td>
 
-                            <td className="border p-3">
-                                {bus.availableSeats}/{bus.totalSeats}
-                            </td>
+        <td className="border p-3">
+            {bus.availableSeats}/{bus.totalSeats}
+        </td>
 
-                            <td className="border p-3">
-                                {bus.isActive ? "Active" : "Inactive"}
-                            </td>
+        <td className="border p-3">
+            {bus.isActive ? "Active" : "Inactive"}
+        </td>
 
-                        </tr>
+    </tr>
 
-                    ))}
+    ))}
 
-                </tbody>
+</tbody>
 
-            </table>
+    </table>
 
-        </div>
+    </div>
 
     );
 

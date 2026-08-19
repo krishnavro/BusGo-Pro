@@ -9,14 +9,14 @@ function AllUsers() {
 
         try {
 
-            const response = await api.get(
-                "/admin/users",
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
-            );
+        const response = await api.get(
+            "/admin/users",
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
 
             setUsers(response.data.users);
 
@@ -34,58 +34,58 @@ function AllUsers() {
 
     return (
 
-        <div className="max-w-7xl mx-auto p-10">
+    <div className="max-w-7xl mx-auto p-10">
 
-            <h1 className="text-4xl font-bold mb-8">
-                All Users
-            </h1>
+        <h1 className="text-4xl font-bold mb-8">
+            All Users
+        </h1>
 
-            <table className="w-full border border-gray-300">
+    <table className="w-full border border-gray-300">
 
-                <thead className="bg-blue-600 text-white">
+    <thead className="bg-blue-600 text-white">
 
-                    <tr>
+        <tr>
 
-                        <th className="p-3 border">Name</th>
-                        <th className="p-3 border">Email</th>
-                        <th className="p-3 border">Role</th>
-                        <th className="p-3 border">Status</th>
+            <th className="p-3 border">Name</th>
+            <th className="p-3 border">Email</th>
+            <th className="p-3 border">Role</th>
+            <th className="p-3 border">Status</th>
 
-                    </tr>
+        </tr>
 
-                </thead>
+    </thead>
 
-                <tbody>
+    <tbody>
 
-                    {users.map((user) => (
+    {users.map((user) => (
 
-                        <tr key={user._id} className="text-center">
+        <tr key={user._id} className="text-center">
 
-                            <td className="border p-3">
-                                {user.name}
-                            </td>
+            <td className="border p-3">
+                {user.name}
+            </td>
 
-                            <td className="border p-3">
-                                {user.email}
-                            </td>
+            <td className="border p-3">
+                {user.email}
+            </td>
 
-                            <td className="border p-3">
-                                {user.role}
-                            </td>
+            <td className="border p-3">
+                {user.role}
+            </td>
 
-                            <td className="border p-3">
-                                {user.status}
-                            </td>
+            <td className="border p-3">
+                {user.status}
+            </td>
 
-                        </tr>
+        </tr>
 
-                    ))}
+    ))}
 
-                </tbody>
+    </tbody>
 
-            </table>
+    </table>
 
-        </div>
+    </div>
 
     );
 
