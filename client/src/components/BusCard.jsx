@@ -61,7 +61,7 @@ function BusCard({ bus, onViewSeats }) {
 
                             <div className="h-px bg-gray-300 flex-1"></div>
 
-                            <span className="text-red-600">
+                            <span className="text-blue-600">
                                 🚌
                             </span>
 

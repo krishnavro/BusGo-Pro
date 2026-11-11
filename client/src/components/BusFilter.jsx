@@ -47,7 +47,7 @@ function BusFilters({ filters, setFilters }) {
                         availableSeats: false,
                         departureTime: ""
                     })}
-                    className="text-sm text-red-600 font-semibold hover:underline"
+                    className="text-sm text-blue-600 font-semibold hover:underline"
                 >
                     Clear All
                 </button>
@@ -74,7 +74,7 @@ function BusFilters({ filters, setFilters }) {
                             type="checkbox"
                             checked={filters.busType === type}
                             onChange={() => handleBusType(type)}
-                            className="accent-red-600 w-4 h-4"
+                            className="accent-blue-600 w-4 h-4"
                         />
 
                         {type}
@@ -97,7 +97,7 @@ function BusFilters({ filters, setFilters }) {
                     Maximum Price
                 </h3>
 
-                <p className="text-red-600 font-bold mb-3">
+                <p className="text-black font-bold mb-3">
                     ₹{filters.maxPrice}
                 </p>
 
@@ -108,7 +108,7 @@ function BusFilters({ filters, setFilters }) {
                     step="100"
                     value={filters.maxPrice}
                     onChange={handlePrice}
-                    className="w-full accent-red-600 cursor-pointer"
+                    className="w-full accent-blue-600 cursor-pointer"
                 />
 
                 <div className="flex justify-between text-xs text-gray-400">
@@ -135,7 +135,7 @@ function BusFilters({ filters, setFilters }) {
                             ...prev,
                             availableSeats: e.target.checked
                         }))}
-                        className="accent-red-600 w-4 h-4"
+                        className="accent-blue-600 w-4 h-4"
                     />
 
                     <span className="font-semibold text-gray-800">
@@ -169,7 +169,7 @@ function BusFilters({ filters, setFilters }) {
                             type="checkbox"
                             checked={filters.departureTime === time}
                             onChange={() => handleDeparture(time)}
-                            className="accent-red-600 w-4 h-4"
+                            className="accent-blue-600 w-4 h-4"
                         />
 
                         {time}

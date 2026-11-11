@@ -156,7 +156,7 @@ function SearchBus() {
                     {/* Loading */}
                     {loading && (
                         <div className="text-center py-20">
-                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-red-600 border-t-transparent mx-auto mb-4"></div>
+                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
 
                             <p className="text-gray-600 font-medium">
                                 Finding the best buses for you...
@@ -293,7 +293,7 @@ function SearchBus() {
 
                             <button
                                 onClick={() => setShowFilters(false)}
-                                className="w-full bg-red-600 text-white font-semibold py-3 rounded-lg mt-5"
+                                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg mt-5"
                             >
                                 Show {filteredBuses.length} Buses
                             </button>
