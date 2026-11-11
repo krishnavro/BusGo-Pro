@@ -34,10 +34,9 @@ function BusDetails() {
     }
   };
 
-  const bookSeat = async () => {
-
+  
+const bookSeat = async () => {
     try {
-
         const response = await api.post(
             "/booking/book",
             {
@@ -58,11 +57,15 @@ function BusDetails() {
 
     } catch (error) {
 
+        // Don't show an alert for authentication errors
+        if (error.response?.status === 401) {
+            return;
+        }
+
         alert(error.response?.data?.message || "Booking Failed");
-
     }
-
 };
+
 
   useEffect(() => {
     getBus();
