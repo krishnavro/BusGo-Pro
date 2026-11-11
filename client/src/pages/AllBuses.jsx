@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
@@ -6,9 +7,7 @@ function AllBuses() {
     const [buses, setBuses] = useState([]);
 
     const getAllBuses = async () => {
-
         try {
-
             const response = await api.get(
                 "/admin/buses",
                 {
@@ -21,11 +20,8 @@ function AllBuses() {
             setBuses(response.data.buses);
 
         } catch (error) {
-
             console.log(error);
-
         }
-
     };
 
     useEffect(() => {
@@ -33,75 +29,71 @@ function AllBuses() {
     }, []);
 
     return (
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
 
-    <div className="max-w-7xl mx-auto p-10">
+            <h1 className="text-2xl sm:text-4xl font-bold mb-6 sm:mb-8">
+                All Buses
+            </h1>
 
-        <h1 className="text-4xl font-bold mb-8">
-            All Buses
-        </h1>
+            <div className="w-full overflow-x-auto rounded">
+                <table className="w-full min-w-[800px] border border-gray-300">
 
-    <table className="w-full border border-gray-300">
+                    <thead className="bg-blue-600 text-white">
+                        <tr>
+                            <th className="border p-3">Bus</th>
+                            <th className="border p-3">Number</th>
+                            <th className="border p-3">Route</th>
+                            <th className="border p-3">Operator</th>
+                            <th className="border p-3">Seats</th>
+                            <th className="border p-3">Status</th>
+                        </tr>
+                    </thead>
 
-        <thead className="bg-blue-600 text-white">
+                    <tbody>
+                        {buses.length > 0 ? (
+                            buses.map((bus) => (
+                                <tr key={bus._id} className="text-center">
 
-            <tr>
+                                    <td className="border p-3">
+                                        {bus.busName}
+                                    </td>
 
-                <th className="border p-3">Bus</th>
-                <th className="border p-3">Number</th>
-                <th className="border p-3">Route</th>
-                <th className="border p-3">Operator</th>
-                <th className="border p-3">Seats</th>
-                <th className="border p-3">Status</th>
+                                    <td className="border p-3">
+                                        {bus.busNumber}
+                                    </td>
 
-            </tr>
+                                    <td className="border p-3">
+                                        {bus.from} → {bus.to}
+                                    </td>
 
-        </thead>
+                                    <td className="border p-3">
+                                        {bus.operatorId?.name}
+                                    </td>
 
-<tbody>
+                                    <td className="border p-3">
+                                        {bus.availableSeats}/{bus.totalSeats}
+                                    </td>
 
-    {buses.map((bus) => (
+                                    <td className="border p-3">
+                                        {bus.isActive ? "Active" : "Inactive"}
+                                    </td>
 
-    <tr
-        key={bus._id}
-        className="text-center"
-    >
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" className="border p-5 text-center">
+                                    No Buses Found
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
 
-        <td className="border p-3">
-            {bus.busName}
-        </td>
+                </table>
+            </div>
 
-        <td className="border p-3">
-            {bus.busNumber}
-        </td>
-
-        <td className="border p-3">
-            {bus.from} → {bus.to}
-        </td>
-
-        <td className="border p-3">
-            {bus.operatorId?.name}
-        </td>
-
-        <td className="border p-3">
-            {bus.availableSeats}/{bus.totalSeats}
-        </td>
-
-        <td className="border p-3">
-            {bus.isActive ? "Active" : "Inactive"}
-        </td>
-
-    </tr>
-
-    ))}
-
-</tbody>
-
-    </table>
-
-    </div>
-
+        </div>
     );
-
 }
 
 export default AllBuses;

@@ -15,6 +15,7 @@ import EditBus from "./pages/EditBus";
 import AdminDashboard from "./pages/AdminDashboard";
 import PendingOperators from "./pages/PendingOperators";
 import AllUsers from "./pages/AllUsers";
+import AllOperators from "./pages/AllOperators";
 import AllBuses from "./pages/AllBuses";
 
 function App() {
@@ -107,6 +108,14 @@ function App() {
               </ProtectedRoute>
           }
           />
+           <Route
+                    path="/admin/operators"
+                    element={
+                        <ProtectedRoute>
+                            <AllOperators />
+                        </ProtectedRoute>
+                    }
+                />
           <Route
     path="/admin/buses"
     element={

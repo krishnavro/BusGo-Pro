@@ -67,18 +67,18 @@ function AdminDashboard() {
     </Link>
 
     <Link
-        to="/admin/users"
-        className={`p-6 rounded text-white ${
-            location.pathname === "/admin/users"
-                ? "bg-green-800"
-                : "bg-green-500 hover:bg-green-600"
-        }`}
-    >
-        <h2 className="text-xl">Operators</h2>
-        <p className="text-3xl font-bold">
-            {dashboard.totalOperators}
-        </p>
-    </Link>
+                    to="/admin/operators"
+                    className={`p-4 sm:p-6 rounded text-white ${
+                        location.pathname === "/admin/operators"
+                            ? "bg-green-800"
+                            : "bg-green-500 hover:bg-green-600"
+                    }`}
+                >
+                    <h2 className="text-base sm:text-xl">Operators</h2>
+                    <p className="text-2xl sm:text-3xl font-bold">
+                        {dashboard.totalOperators}
+                    </p>
+                </Link>
 
     <Link
         to="/admin/buses"
