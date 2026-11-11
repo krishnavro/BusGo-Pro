@@ -35,7 +35,7 @@ function SearchSection({ margintop }) {
 
     const handleSearch = () => {
         if (!from || !to) {
-            alert("Please select both From and To.");
+            alert("Please select Your Source and Destination.");
             return;
         }
 
