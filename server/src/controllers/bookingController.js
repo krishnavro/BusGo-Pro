@@ -104,26 +104,40 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-const myBookings = async (req, res) => {
-  try {
-    const bookings = await BookingModel.find({
-      userId: req.user.id,
-    }).populate(
-      "busId",
-      "busName busNumber from to departureTime arrivalTime"
-    );
 
-    res.status(200).json({
-      success: true,
-      bookings,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+const myBookings = async (req, res) => {
+    try {
+        const bookings = await BookingModel.find({
+            userId: req.user.id,
+        }).populate("busId");
+
+        const updatedBookings = await Promise.all(
+            bookings.map(async (booking) => {
+                const passenger = await UserModel.findById(
+                    booking.userId
+                ).select("name email");
+
+                return {
+                    ...booking.toObject(),
+                    userId: passenger,
+                };
+            })
+        );
+
+        res.status(200).json({
+            success: true,
+            bookings: updatedBookings,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };
+
+
 
 const getBookedSeats = async (req, res) => {
   try {

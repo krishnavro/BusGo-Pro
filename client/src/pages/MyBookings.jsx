@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import api from "../services/api";
-
+import generateTicket from "../utils/generateTicket";
 function MyBookings() {
 
     const [bookings, setBookings] = useState([]);
@@ -21,7 +21,7 @@ function MyBookings() {
                     },
                 }
             );
-
+            console.log(response.data.bookings[0]);
             setBookings(response.data.bookings || []);
 
         } catch (error) {
@@ -245,23 +245,30 @@ function MyBookings() {
 
                                     </div>
 
-                                    {/* Cancel Button */}
-                                    {booking.bookingStatus === "Booked" ? (
+                                    <div className="flex flex-col sm:flex-row gap-5">
 
+                                    <button
+                                        onClick={() => generateTicket(booking)}
+                                        disabled={booking.bookingStatus === "Cancelled"}
+                                        className="w-full sm:w-auto bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold px-6 py-3 rounded-lg transition duration-200"
+                                    >
+                                        Download Ticket
+                                    </button>
+
+                                    {booking.bookingStatus === "Booked" ? (
                                         <button
                                             onClick={() => cancelBooking(booking._id)}
                                             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold px-6 py-3 rounded-lg transition duration-200"
                                         >
                                             Cancel Booking
                                         </button>
-
                                     ) : (
-
-                                        <p className="text-sm text-gray-500 font-medium">
+                                        <p className="text-sm text-gray-500 font-medium self-center">
                                             This booking has been cancelled.
                                         </p>
-
                                     )}
+
+                                </div>
 
                                 </div>
 
