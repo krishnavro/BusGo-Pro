@@ -2,69 +2,249 @@
 import jsPDF from "jspdf";
 
 const generateTicket = (booking) => {
-    const doc = new jsPDF();
+    try {
+        const doc = new jsPDF();
 
-    const bus = booking.busId;
-    const passenger = booking.userId;
+        const bus = booking.busId || {};
+        const passenger = booking.userId || {};
 
-    // Header
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text("BusGo Pro", 20, 20);
+        const pageWidth = 210;
+        const left = 20;
+        const right = 190;
+        const contentWidth = right - left;
 
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
-    doc.text("Bus Reservation Ticket", 20, 28);
+        // Basic formatting
+        const formatDate = (date) => {
+            if (!date) return "N/A";
 
-    doc.line(20, 35, 190, 35);
+            return new Date(date).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            });
+        };
 
-    // Booking Information
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Booking Details", 20, 48);
+        // Text helper
+        const heading = (text, y) => {
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.setTextColor(20, 20, 20);
+            doc.text(text, left, y);
 
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
+            doc.setDrawColor(70, 70, 70);
+            doc.setLineWidth(0.3);
+            doc.line(left, y + 3, right, y + 3);
+        };
 
-    doc.text(`Booking ID: ${booking._id}`, 20, 60);
-    doc.text(`Passenger: ${passenger?.name || "N/A"}`, 20, 70);
-    doc.text(`Email: ${passenger?.email || "N/A"}`, 20, 80);
+        // Table row helper
+        const tableRow = (label, value, y, labelWidth = 55) => {
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(60, 60, 60);
 
-    // Bus Information
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Journey Details", 20, 98);
+            doc.text(label, left + 3, y);
 
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(20, 20, 20);
 
-    doc.text(`Bus: ${bus?.busName || "N/A"}`, 20, 110);
-    doc.text(`Bus Number: ${bus?.busNumber || "N/A"}`, 20, 120);
-    doc.text(`From: ${bus?.from || "N/A"}`, 20, 130);
-    doc.text(`To: ${bus?.to || "N/A"}`, 20, 140);
-    doc.text(`Departure: ${bus?.departureTime || "N/A"}`, 20, 150);
-    doc.text(`Arrival: ${bus?.arrivalTime || "N/A"}`, 20, 160);
+            const valueLines = doc.splitTextToSize(
+                String(value ?? "N/A"),
+                contentWidth - labelWidth - 8
+            );
 
-    // Ticket Information
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text("Ticket Information", 20, 178);
+            doc.text(valueLines.slice(0, 2), left + labelWidth, y);
 
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "normal");
+            return y + Math.max(9, valueLines.slice(0, 2).length * 5 + 4);
+        };
 
-    doc.text(`Seat Number: ${booking.seatNumber}`, 20, 190);
-    doc.text(`Ticket Price: Rs. ${booking.price}`, 20, 200);
-    doc.text(`Status: ${booking.bookingStatus}`, 20, 210);
+        // =========================
+        // HEADER
+        // =========================
 
-    // Footer
-    doc.line(20, 225, 190, 225);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(23);
+        doc.setTextColor(0, 0, 0);
 
-    doc.setFontSize(10);
-    doc.text("Thank you for choosing BusGo Pro!", 20, 235);
+        doc.text("BUSGO PRO", pageWidth / 2, 25, {
+            align: "center",
+        });
 
-    // Download PDF
-    doc.save(`BusGo-Ticket-${booking._id}.pdf`);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+
+        doc.text("BUS RESERVATION TICKET", pageWidth / 2, 33, {
+            align: "center",
+        });
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+
+        doc.text("Electronic Travel Ticket", pageWidth / 2, 39, {
+            align: "center",
+        });
+
+        doc.setDrawColor(30, 30, 30);
+        doc.setLineWidth(0.6);
+        doc.line(left, 46, right, 46);
+
+        // =========================
+        // BOOKING INFORMATION
+        // =========================
+
+        let y = 57;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+
+        doc.text("Booking ID:", left, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(String(booking._id || "N/A"), left + 28, y);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Status:", 140, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(booking.bookingStatus || "N/A", 157, y);
+
+        y += 9;
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Booking Date:", left, y);
+
+        doc.setFont("helvetica", "normal");
+        doc.text(formatDate(booking.bookingDate), left + 28, y);
+
+        doc.setDrawColor(130, 130, 130);
+        doc.line(left, y + 6, right, y + 6);
+
+        // =========================
+        // JOURNEY DETAILS
+        // =========================
+
+        y += 18;
+
+        heading("JOURNEY DETAILS", y);
+
+        y += 15;
+
+        // Journey table header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+
+        doc.text("FROM", left + 3, y);
+        doc.text("TO", 115, y);
+
+        y += 8;
+
+        doc.setFontSize(15);
+        doc.text(bus.from || "N/A", left + 3, y);
+        doc.text(bus.to || "N/A", 115, y);
+
+        y += 9;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+
+        doc.text("Departure Time", left + 3, y);
+        doc.text("Arrival Time", 115, y);
+
+        y += 7;
+
+        doc.setFont("helvetica", "bold");
+        doc.text(bus.departureTime || "N/A", left + 3, y);
+        doc.text(bus.arrivalTime || "N/A", 115, y);
+
+        y += 10;
+
+        doc.setDrawColor(180, 180, 180);
+        doc.line(left, y, right, y);
+
+        // =========================
+        // PASSENGER DETAILS
+        // =========================
+
+        y += 13;
+
+        heading("PASSENGER DETAILS", y);
+
+        y += 14;
+
+        y = tableRow("Passenger Name", passenger.name, y);
+        y = tableRow("Email Address", passenger.email, y);
+        y = tableRow("Seat Number", booking.seatNumber, y);
+
+        doc.setDrawColor(180, 180, 180);
+        doc.line(left, y, right, y);
+
+        // =========================
+        // BUS DETAILS
+        // =========================
+
+        y += 13;
+
+        heading("BUS DETAILS", y);
+
+        y += 14;
+
+        y = tableRow("Bus Name", bus.busName, y);
+        y = tableRow("Bus Number", bus.busNumber, y);
+        y = tableRow("Ticket Price", `Rs. ${booking.price ?? "N/A"}`, y);
+
+        // =========================
+        // FOOTER
+        // =========================
+
+        y += 8;
+
+        doc.setDrawColor(30, 30, 30);
+        doc.setLineWidth(0.5);
+        doc.line(left, y, right, y);
+
+        y += 10;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(50, 50, 50);
+
+        doc.text(
+            "Please carry a valid ID proof during boarding.",
+            pageWidth / 2,
+            y,
+            { align: "center" }
+        );
+
+        y += 9;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+
+        doc.text(
+            "Thank you for choosing BusGo Pro!",
+            pageWidth / 2,
+            y,
+            { align: "center" }
+        );
+
+        y += 7;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+
+        doc.text(
+            "Have a safe and comfortable journey.",
+            pageWidth / 2,
+            y,
+            { align: "center" }
+        );
+
+        // Download PDF
+        doc.save(`BusGo-Ticket-${booking._id}.pdf`);
+
+    } catch (error) {
+        console.error("Ticket generation failed:", error);
+        alert("Unable to generate ticket. Please try again.");
+    }
 };
 
 export default generateTicket;
