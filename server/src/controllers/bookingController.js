@@ -1,5 +1,6 @@
 const BookingModel = require("../models/Booking");
 const BusModel = require("../models/Bus");
+const UserModel = require("../models/User");
 
 const bookSeat = async (req, res) => {
   try {
