@@ -88,7 +88,7 @@ function SearchSection({ margintop }) {
 
                 <button
                     onClick={handleSearch}
-                    className="bg-blue-600 text-white rounded justify-self-center px-4 py-2 w-fit hover:bg-blue-700"
+                    className="bg-blue-600 text-white rounded justify-self-center px-4 py-2 w-fit hover:bg-blue-700 cursor-pointer"
                 >
                     Search Bus
                 </button>

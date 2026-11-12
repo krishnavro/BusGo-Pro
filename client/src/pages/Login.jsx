@@ -67,7 +67,7 @@ function Login() {
 
            <button
               onClick={handleLogin}
-              className="w-full bg-blue-600 text-white p-3 rounded"
+              className="w-full bg-blue-600 text-white p-3 rounded cursor-pointer"
           >
               Login
           </button>

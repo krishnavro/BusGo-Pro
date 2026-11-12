@@ -86,7 +86,7 @@ function Register() {
 
             <button
                 onClick={handleRegister}
-                className="w-full bg-green-600 text-white p-3 rounded"
+                className="w-full bg-blue-600 text-white p-3 rounded cursor-pointer"
             >
                 Register
             </button>
